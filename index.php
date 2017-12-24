@@ -32,3 +32,34 @@ for ($i = 0; $i<4; $i++){
     $file_content .= $str;
     file_put_contents($file,$file_content);
 }
+$file = "date.csv";
+$file2 = "names_sum.csv";
+$arr_file_date = file($file);
+foreach($arr_file_date as $val){
+	preg_match_all("~([\d]{3},[а-яА-Я]+)~", $val, $match_name);
+	$trimet = explode(",", $match_name[1][0]);
+	$arrNames_sum[] = $trimet[1];
+	$arrDig_sum[] = $trimet[0];
+}
+function array_combine_($keys, $values)
+{
+	$result = array();
+	foreach($keys as $i => $k){
+		$result[$k][] = $values[$i];
+	}
+	array_walk($result, 'array_help');
+	return $result;
+}
+function array_help($v){
+	return $v=(count($v) == 1)? array_pop($v): $v;
+}
+print_r($arrNames_sum);
+print_r($arrDig_sum);
+$arr_result =  array_combine_($arrNames_sum, $arrDig_sum);
+print_r($arr_result);
+foreach($arr_result as $n => $s){
+	$res_str =  $n. " sum: ". array_sum($s)."\n";
+	$file_content2 = file_get_contents($file2);
+	$file_content2 .= $res_str;
+	file_put_contents($file2,$file_content2);
+}
